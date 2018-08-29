@@ -1,16 +1,25 @@
 package com.alexanr.demin.materialdesign;
 
-import android.graphics.Bitmap;
+import java.io.File;
 
 public class Img {
-    private Bitmap img;
+    private String name;
+    private File img;
     private boolean isFavorite;
 
-    public Bitmap getImg() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public File getImg() {
         return img;
     }
 
-    public void setImg(Bitmap img) {
+    public void setImg(File img) {
         this.img = img;
     }
 

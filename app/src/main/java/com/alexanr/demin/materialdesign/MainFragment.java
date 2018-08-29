@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +29,7 @@ public class MainFragment extends Fragment {
     private View.OnClickListener FABListener;
     private View root;
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private String mCurrentPhotoPath;
+    private File photoFile;
 
     RecyclerView recyclerView;
     ImgItemAdapter adapter;
@@ -54,8 +53,9 @@ public class MainFragment extends Fragment {
 
     private void initRecycler() {
         recyclerView = root.findViewById(R.id.main_img_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         adapter = new ImgItemAdapter();
+        adapter.setImgList(ImgItemsList.get().getList());
         recyclerView.setAdapter(adapter);
     }
 
@@ -65,7 +65,6 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    File photoFile = null;
                     try {
                         StringBuilder fileName = new StringBuilder();
                         fileName.append("JPAG_");
@@ -73,7 +72,6 @@ public class MainFragment extends Fragment {
                         fileName.append("_");
                         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                         photoFile = File.createTempFile(fileName.toString(), ".jpg", storageDir);
-                        mCurrentPhotoPath = photoFile.getAbsolutePath();
                     } catch (IOException ex) {
                         Snackbar.make(v, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
                     }
@@ -95,6 +93,9 @@ public class MainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO) {
             Snackbar.make(root, getString(R.string.photo_added), Snackbar.LENGTH_SHORT).show();
+            Img img = new Img();
+            img.setImg(photoFile);
+            adapter.setImgItem(img);
         }
     }
 

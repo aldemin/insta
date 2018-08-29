@@ -5,8 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,10 @@ public class ImgItemAdapter extends RecyclerView.Adapter<ImgItemAdapter.ViewHold
         }
 
         void bind(Img item) {
-            this.img.setImageBitmap(item.getImg());
+            Picasso.get()
+                    .load(item.getImg())
+                    // TODO: 27.08.2018 add resize
+                    .into(img);
         }
     }
 
