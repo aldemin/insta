@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction().add(R.id.main_container,new MainFragment()).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.main_container,new MainFragment()).commit();
+        }
         toolbar = findViewById(R.id.main_toolbar);
         drawer = findViewById(R.id.main_drawer);
         navigationView = findViewById(R.id.main_nav_view);
