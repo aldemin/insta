@@ -17,14 +17,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/RedTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Home.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StyleSelectionActivity" />
+        <activity android:name=".Settings.Settings" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.provider"

@@ -1,4 +1,4 @@
-package com.alexanr.demin.materialdesign;
+package com.alexanr.demin.materialdesign.Home;
 
 
 import android.content.Intent;
@@ -13,13 +13,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alexanr.demin.materialdesign.R;
 import com.alexanr.demin.materialdesign.database.Database;
 import com.alexanr.demin.materialdesign.database.Photo;
 

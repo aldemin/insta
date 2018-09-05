@@ -1,4 +1,4 @@
-package com.alexanr.demin.materialdesign;
+package com.alexanr.demin.materialdesign.Home;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.alexanr.demin.materialdesign.R;
 import com.alexanr.demin.materialdesign.database.Database;
 import com.alexanr.demin.materialdesign.database.Photo;
 import com.squareup.picasso.Picasso;
