@@ -1,4 +1,4 @@
-package com.alexanr.demin.materialdesign.Home;
+package com.alexanr.demin.materialdesign.Home.Tabs.ButtomBar;
 
 
 import android.content.Intent;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alexanr.demin.materialdesign.R;
+import com.alexanr.demin.materialdesign.Recycler.ImgItemAdapter;
 import com.alexanr.demin.materialdesign.database.Database;
 import com.alexanr.demin.materialdesign.database.Photo;
 
@@ -31,37 +32,41 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MainFragment extends Fragment {
+public class AllPhotoFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private ImgItemAdapter adapter;
+
     private FloatingActionButton FAB;
     private View.OnClickListener FABListener;
-    private View root;
-    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_TAKE_PHOTO = 6654;
     private File photoFile;
 
-    RecyclerView recyclerView;
-    ImgItemAdapter adapter;
+    public static AllPhotoFragment newInstance(Bundle bundle) {
+        AllPhotoFragment fragment = new AllPhotoFragment();
+        Bundle args = new Bundle();
+        args.putBundle("gettedArgs", bundle);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_main, container, false);
+        View root = inflater.inflate(R.layout.fragment_all_photo, container, false);
+        if (savedInstanceState == null) {
+            initRecycler(root);
+        }
         initListeners();
         FAB = root.findViewById(R.id.floating_action_button);
         FAB.setOnClickListener(FABListener);
-        initRecycler();
         return root;
     }
 
-    @Override
-    public void onDestroy() {
-        FAB.setOnClickListener(null);
-        super.onDestroy();
-    }
-
-    private void initRecycler() {
-        recyclerView = root.findViewById(R.id.main_img_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
-        adapter = new ImgItemAdapter();
+    private void initRecycler(View view) {
+        recyclerView = view.findViewById(R.id.fragment_all_img_list);
+        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
+        adapter = new ImgItemAdapter(getContext());
         adapter.setPhotoList(Database.get().getDatabase().photosDao().getAll());
         recyclerView.setAdapter(adapter);
     }
@@ -85,7 +90,7 @@ public class MainFragment extends Fragment {
                     }
                     if (photoFile != null) {
                         Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                                "com.example.android.provider",
+                                getString(R.string.provider),
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -95,26 +100,22 @@ public class MainFragment extends Fragment {
         };
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Snackbar.make(root, getString(R.string.photo_added), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), getString(R.string.photo_added), Snackbar.LENGTH_SHORT).show();
             Photo photo = new Photo();
             photo.setPath(photoFile.getPath());
-            photo.setIsFavorite(0);
+            photo.setIsFavorite(false);
             Database.get().getDatabase().photosDao().insert(photo);
             adapter.setImgItem(photo);
+            //AdapterFactory.get().getAllPhotoAdapter().setImgItem(photo);
+            //ImgItemAdapter.get().setImgItem(photo);
         } else {
             photoFile.delete();
             Log.d("photo", "onActivityResult: delete");
         }
     }
 
-    @Override
-    public void onDetach() {
-        root = null;
-        super.onDetach();
-    }
 }

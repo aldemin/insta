@@ -14,7 +14,7 @@ public interface PhotosDao {
     @Query("SELECT * FROM photo")
     List<Photo> getAll();
 
-    @Query("SELECT * FROM photo WHERE isFavorite = '1'")
+    @Query("SELECT * FROM photo WHERE isFavorite = 1")
     List<Photo> getFavorites();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

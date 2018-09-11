@@ -1,12 +1,13 @@
-package com.alexanr.demin.materialdesign.Home;
+package com.alexanr.demin.materialdesign.Recycler;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.alexanr.demin.materialdesign.R;
 import com.alexanr.demin.materialdesign.database.Database;
@@ -19,7 +20,14 @@ import java.util.List;
 
 public class ImgItemAdapter extends RecyclerView.Adapter<ImgItemAdapter.ViewHolder> {
 
+    private int width;
     private List<Photo> photoList = new ArrayList<>();
+
+
+    public ImgItemAdapter(Context context) {
+        super();
+        this.width = calculateWidth(context);
+    }
 
     public void setPhotoList(List<Photo> list) {
         this.photoList.addAll(list);
@@ -28,12 +36,18 @@ public class ImgItemAdapter extends RecyclerView.Adapter<ImgItemAdapter.ViewHold
 
     public void setImgItem(Photo item) {
         this.photoList.add(item);
-        notifyDataSetChanged();
+        notifyItemInserted(this.photoList.size() - 1);
     }
 
     public void cleanImgItems() {
         this.photoList.clear();
         notifyDataSetChanged();
+    }
+
+    private int calculateWidth(Context context) {
+        float marginCoefficient = 0.8f;
+        int columnCount = 2;
+        return (int) (marginCoefficient * context.getResources().getDisplayMetrics().widthPixels) / columnCount;
     }
 
     @NonNull
@@ -56,7 +70,7 @@ public class ImgItemAdapter extends RecyclerView.Adapter<ImgItemAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView photo;
-        private ImageButton button;
+        private ToggleButton button;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -66,30 +80,35 @@ public class ImgItemAdapter extends RecyclerView.Adapter<ImgItemAdapter.ViewHold
         }
 
         void bind(Photo item) {
-            int width = (int) (0.8 * photo.getContext().getResources().getDisplayMetrics().widthPixels) / 2;
             Picasso.get()
                     .load(new File(item.getPath()))
                     .resize(width, 0)
                     .into(photo);
-            if (item.getIsFavorite() == 0) {
-                button.setBackground(button.getContext().getDrawable(R.drawable.ic_unfavorite));
+            if (item.getIsFavorite()) {
+                button.setChecked(true);
+                //button.setBackground(button.getContext().getDrawable(R.drawable.ic_unfavorite));
             } else {
-                button.setBackground(button.getContext().getDrawable(R.drawable.ic_favorite));
+                //button.setBackground(button.getContext().getDrawable(R.drawable.ic_favorite));
+                button.setChecked(false);
             }
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if (photoList.get(position).getIsFavorite() == 0) {
-                v.setBackground(v.getContext().getDrawable(R.drawable.ic_favorite));
-                photoList.get(position).setIsFavorite(1);
+            ToggleButton button = (ToggleButton) v;
+            if (photoList.get(position).getIsFavorite()) {
+                //v.setBackground(v.getContext().getDrawable(R.drawable.ic_favorite));
+                button.setChecked(true);
+                photoList.get(position).setIsFavorite(false);
                 Database.get().getDatabase().photosDao().update(photoList.get(position));
             } else {
-                v.setBackground(v.getContext().getDrawable(R.drawable.ic_unfavorite));
-                photoList.get(position).setIsFavorite(0);
+                button.setChecked(false);
+                //v.setBackground(v.getContext().getDrawable(R.drawable.ic_unfavorite));
+                photoList.get(position).setIsFavorite(true);
                 Database.get().getDatabase().photosDao().update(photoList.get(position));
             }
+            notifyItemChanged(position);
         }
     }
 }
