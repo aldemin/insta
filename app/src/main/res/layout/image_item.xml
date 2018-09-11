@@ -18,13 +18,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-        <ImageButton
+        <ToggleButton
             android:id="@+id/image_item_favorite_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="end"
             android:layout_margin="8dp"
-            android:background="@drawable/ic_unfavorite" />
+            android:background="@drawable/favorite_toggle_selector"
+            android:textOn=""
+            android:textOff=""
+            android:checked="true"/>
 
     </LinearLayout>
 

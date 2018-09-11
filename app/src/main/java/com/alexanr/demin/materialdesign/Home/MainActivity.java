@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.alexanr.demin.materialdesign.Constants;
+import com.alexanr.demin.materialdesign.Home.Tabs.CustomFragmentAdapter;
+import com.alexanr.demin.materialdesign.Home.Tabs.FragmentFactory;
+import com.alexanr.demin.materialdesign.Home.Tabs.MainFragment;
 import com.alexanr.demin.materialdesign.R;
 import com.alexanr.demin.materialdesign.Settings.Settings;
 
@@ -22,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private String currentTheme;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.main_container,new MainFragment()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_container,MainFragment.newInstance(null)).commit();
         }
         toolbar = findViewById(R.id.main_toolbar);
         drawer = findViewById(R.id.main_drawer);
@@ -41,7 +48,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        FragmentFactory fragmentFactory = new FragmentFactory();
+        CustomFragmentAdapter customFragmentAdapter = new CustomFragmentAdapter(getSupportFragmentManager(),fragmentFactory);
 
+        viewPager = findViewById(R.id.main_container);
+        viewPager.setAdapter(customFragmentAdapter);
+
+        tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
     }
 
     @Override

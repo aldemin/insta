@@ -11,7 +11,7 @@ public class Photo {
     private long id;
     private String name;
     private String path;
-    private int isFavorite;
+    private boolean isFavorite;
 
     public long getId() {
         return id;
@@ -37,11 +37,11 @@ public class Photo {
         this.path = path;
     }
 
-    public int getIsFavorite() {
+    public boolean getIsFavorite() {
         return isFavorite;
     }
 
-    public void setIsFavorite(int isFavorite) {
+    public void setIsFavorite(boolean isFavorite) {
         this.isFavorite = isFavorite;
     }
 }
