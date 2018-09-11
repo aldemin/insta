@@ -3,6 +3,8 @@ package com.alexanr.demin.materialdesign;
 import android.content.Context;
 import android.os.Environment;
 
+import com.alexanr.demin.materialdesign.database.Photo;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -10,7 +12,7 @@ public class ImgItemsList {
 
     private static ImgItemsList itemsList = null;
 
-    private ArrayList<Img> list;
+    private ArrayList<Photo> list;
 
     private ImgItemsList(Context context) {
         list = new ArrayList<>();
@@ -30,14 +32,14 @@ public class ImgItemsList {
     private void initFileList(Context context) {
         File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath());
         if (directory.listFiles().length > 0) {
-            for (File file : directory.listFiles()) {
-                Img img = new Img();
-                img.setImg(file);
-                img.setName(file.getName());
+/*            for (File file : directory.listFiles()) {
+                Photo photo = new Photo();
+                photo.set(file);
+                photo.setName(file.getName());
                 // TODO: 27.08.2018 add favorite from prefs
-                img.setFavorite(false);
-                list.add(img);
-            }
+                photo.setFavorite(false);
+                list.add(photo);
+            }*/
         } else {
             // TODO: 27.08.2018 add else
         }
@@ -47,7 +49,7 @@ public class ImgItemsList {
         return list.size();
     }
 
-    public ArrayList<Img> getList() {
+    public ArrayList<Photo> getList() {
         return list;
     }
 }

@@ -1,4 +1,4 @@
-package com.alexanr.demin.materialdesign;
+package com.alexanr.demin.materialdesign.Home;
 
 
 import android.content.Intent;
@@ -12,17 +12,24 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.alexanr.demin.materialdesign.R;
+import com.alexanr.demin.materialdesign.database.Database;
+import com.alexanr.demin.materialdesign.database.Photo;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MainFragment extends Fragment {
     private FloatingActionButton FAB;
@@ -53,9 +60,9 @@ public class MainFragment extends Fragment {
 
     private void initRecycler() {
         recyclerView = root.findViewById(R.id.main_img_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
         adapter = new ImgItemAdapter();
-        adapter.setImgList(ImgItemsList.get().getList());
+        adapter.setPhotoList(Database.get().getDatabase().photosDao().getAll());
         recyclerView.setAdapter(adapter);
     }
 
@@ -74,6 +81,7 @@ public class MainFragment extends Fragment {
                         photoFile = File.createTempFile(fileName.toString(), ".jpg", storageDir);
                     } catch (IOException ex) {
                         Snackbar.make(v, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
+                        photoFile = null;
                     }
                     if (photoFile != null) {
                         Uri photoURI = FileProvider.getUriForFile(getActivity(),
@@ -91,11 +99,16 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             Snackbar.make(root, getString(R.string.photo_added), Snackbar.LENGTH_SHORT).show();
-            Img img = new Img();
-            img.setImg(photoFile);
-            adapter.setImgItem(img);
+            Photo photo = new Photo();
+            photo.setPath(photoFile.getPath());
+            photo.setIsFavorite(0);
+            Database.get().getDatabase().photosDao().insert(photo);
+            adapter.setImgItem(photo);
+        } else {
+            photoFile.delete();
+            Log.d("photo", "onActivityResult: delete");
         }
     }
 
